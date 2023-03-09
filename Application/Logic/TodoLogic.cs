@@ -76,9 +76,20 @@ public class TodoLogic : ITodoLogic
         await todoDao.UpdateAsync(updated);
     }
 
-    public Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        Todo? todo = await todoDao.GetByIdAsync(id);
+        if (todo == null)
+        {
+            throw new Exception($"Todo with ID {id} was not found!");
+        }
+
+        if (!todo.IsCompleted)
+        {
+            throw new Exception("Cannot delete un-completed Todo!");
+        }
+
+        await todoDao.DeleteAsync(id);
     }
 
     private void ValidateTodo(Todo dto)

@@ -68,7 +68,16 @@ public class TodoFileDao : ITodoDao
 
     public Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        Todo? existing = context.Todos.FirstOrDefault(todo => todo.Id == id);
+        if (existing == null)
+        {
+            throw new Exception($"Todo with id {id} does not exist!");
+        }
+
+        context.Todos.Remove(existing); 
+        context.SaveChanges();
+
+        return Task.CompletedTask;
     }
 
     public Task UpdateAsync(Todo toUpdate)
